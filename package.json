@@ -1,0 +1,19 @@
+{
+  "name": "react-native-cached-image-component",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Steve Palero",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^17.0.3",
+    "@types/react-native": "^0.64.2",
+    "metro-react-native-babel-preset": "^0.56.0",
+    "react": "^16.13.0",
+    "react-native": "^0.61.5",
+    "react-native-fast-image": "^8.3.4"
+  }
+}
