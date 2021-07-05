@@ -13,6 +13,8 @@ type priority = 'high' | 'normal' | 'low'
 
 type cache = 'immutable' | 'web' | 'cacheOnly'
 
+type resizeModes = 'contain' | 'cover' | 'stretch' | 'center'
+
 type customImageCache = {
   uri: string,
   header?: authorization,
@@ -27,7 +29,7 @@ interface ComponentProps {
   bordered?: boolean,
   borderWidth?: number,
   borderColor?: string,
-  resize?: string,
+  resize?: resizeModes,
   uri: string | customImageCache | any,
   width?: number,
   imageStyle?: object,
