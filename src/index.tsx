@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import React, { PureComponent, ReactNode } from 'react'
+import React, { PureComponent } from 'react'
 
 import FastImage, { ImageStyle, ResizeMode, Source } from 'react-native-fast-image'
 
@@ -13,7 +13,7 @@ interface ComponentProps {
    *
    * Can be a local image or remote image
    */
-  uri: number | Source | string,
+  uri: number | Source,
   token?: string,
   /**
     * width of the image
@@ -127,30 +127,32 @@ class CachedImage extends PureComponent<ComponentProps> {
   }
 
   defineUri = (): any => {
-    const { uri, token } = this.props;
+    const {
+      uri,
+      // token,
+    } = this.props;
     if (typeof uri === 'string') {
       return {
         uri,
-        headers: {
-          // Authorization: baseConfig.cachedImage.token,
-          Accept: "*/*",
-        },
+        // headers: { Authorization: baseConfig.cachedImage.token },
         priority: this.checkPriority(baseConfig.cachedImage.priority),
         cache: this.checkCache(baseConfig.cachedImage.cache),
       }
     }
+
     if (typeof uri === 'object') {
       return {
         uri: uri.uri,
-        headers: { Authorization: token || baseConfig.cachedImage.token },
+        // headers: { Authorization: token || baseConfig.cachedImage.token },
         priority: this.checkPriority(typeof uri.priority !== 'undefined' ? uri.priority : baseConfig.cachedImage.priority),
         cache: this.checkCache(typeof uri.cache !== 'undefined' ? uri.cache : baseConfig.cachedImage.cache),
       }
     }
+
     return uri
   }
 
-  render(): ReactNode {
+  render() {
     const {
       height,
       width,
