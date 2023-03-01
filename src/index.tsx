@@ -1,38 +1,51 @@
 /* eslint-disable import/no-cycle */
-import React, { PureComponent } from 'react'
+import React, { PureComponent, ReactNode } from 'react'
 
-import FastImage from 'react-native-fast-image'
+import FastImage, { ImageStyle, ResizeMode, Source } from 'react-native-fast-image'
 
 import { baseConfig } from '../../../src/config/themes';
 
-type authorization = {
-  Authorization?: string,
-}
-
-type priority = 'high' | 'normal' | 'low'
-
-type cache = 'immutable' | 'web' | 'cacheOnly'
-
 type resizeModes = 'contain' | 'cover' | 'stretch' | 'center'
 
-type customImageCache = {
-  uri: string,
-  header?: authorization,
-  priority?: priority,
-  token?: string,
-  cache?: cache,
-}
-
 interface ComponentProps {
-  rounded?: boolean,
+  /**
+   * Source image
+   *
+   * Can be a local image or remote image
+   */
+  uri: number | Source | string,
+  token?: string,
+  /**
+    * width of the image
+    *
+    * defaults to 20
+    */
+  width?: number,
+  /**
+    * height of the image
+    *
+    * defaults to 20
+    */
   height?: number,
+  /**
+    * Specifies if image should have rounded border or not
+    */
+  rounded?: boolean,
   bordered?: boolean,
   borderWidth?: number,
   borderColor?: string,
+  /**
+    * style of the image.
+    */
+  imageStyle?: ImageStyle,
+  /**
+    * resizeMode of the image.
+    */
   resize?: resizeModes,
-  uri: string | customImageCache | any,
-  width?: number,
-  imageStyle?: object,
+  /**
+    * tintColor of the image,
+    */
+  tintColor?: string,
 }
 
 class CachedImage extends PureComponent<ComponentProps> {
@@ -47,7 +60,7 @@ class CachedImage extends PureComponent<ComponentProps> {
     resize: baseConfig.cachedImage.resize,
   }
 
-  identifyRadius = () => {
+  identifyRadius = (): any => {
     const {
       rounded,
       height,
@@ -59,7 +72,7 @@ class CachedImage extends PureComponent<ComponentProps> {
     return { borderRadius: 0 };
   }
 
-  identifyBordered = () => {
+  identifyBordered = (): any => {
     const {
       bordered,
       borderWidth,
@@ -77,7 +90,7 @@ class CachedImage extends PureComponent<ComponentProps> {
     }
   }
 
-  identifyMode = () => {
+  identifyMode = (): ResizeMode => {
     const { resize } = this.props;
     if (resize === 'cover') {
       return FastImage.resizeMode.cover;
@@ -91,7 +104,7 @@ class CachedImage extends PureComponent<ComponentProps> {
     return FastImage.resizeMode.contain;
   }
 
-  checkPriority = (priorityType: string) => {
+  checkPriority = (priorityType: string): string => {
     if (priorityType === 'normal') {
       return FastImage.priority.normal;
     }
@@ -101,7 +114,7 @@ class CachedImage extends PureComponent<ComponentProps> {
     return FastImage.priority.low;
   }
 
-  checkCache = (cacheType: string) => {
+  checkCache = (cacheType: string): string => {
     if (cacheType === 'immutable') {
       return FastImage.cacheControl.immutable;
     }
@@ -113,30 +126,31 @@ class CachedImage extends PureComponent<ComponentProps> {
     return FastImage.cacheControl.web;
   }
 
-  defineUri = () => {
-    const { uri } = this.props;
+  defineUri = (): any => {
+    const { uri, token } = this.props;
     if (typeof uri === 'string') {
       return {
         uri,
-        headers: { Authorization: baseConfig.cachedImage.token },
+        headers: {
+          // Authorization: baseConfig.cachedImage.token,
+          Accept: "*/*",
+        },
         priority: this.checkPriority(baseConfig.cachedImage.priority),
         cache: this.checkCache(baseConfig.cachedImage.cache),
       }
     }
-
     if (typeof uri === 'object') {
       return {
         uri: uri.uri,
-        headers: { Authorization: uri.token },
+        headers: { Authorization: token || baseConfig.cachedImage.token },
         priority: this.checkPriority(typeof uri.priority !== 'undefined' ? uri.priority : baseConfig.cachedImage.priority),
         cache: this.checkCache(typeof uri.cache !== 'undefined' ? uri.cache : baseConfig.cachedImage.cache),
       }
     }
-
     return uri
   }
 
-  render() {
+  render(): ReactNode {
     const {
       height,
       width,
